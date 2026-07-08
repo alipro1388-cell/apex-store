@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة الطلبات | APEX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=Tajawal:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0b;--surface:#151310;--gold:#c9a227;--gold-bright:#e8c468;
+    --text:#f5f1e8;--text-muted:#9c9488;--rule:#2b2822;--green:#5cb87a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'Tajawal',sans-serif;line-height:1.6;min-height:100vh;}
+  .mono{font-family:'Space Mono',monospace;}
+
+  /* Login gate */
+  #login-screen{
+    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+  }
+  .login-box{
+    background:var(--surface);border:1px solid var(--rule);padding:36px 28px;
+    width:100%;max-width:360px;text-align:center;
+  }
+  .login-box .logo{font-family:'Space Mono',monospace;font-weight:700;font-size:26px;color:var(--gold-bright);letter-spacing:4px;margin-bottom:6px;}
+  .login-box p{color:var(--text-muted);font-size:13px;margin-bottom:24px;}
+  .login-box input{
+    width:100%;background:var(--bg);border:1px solid var(--rule);color:var(--text);
+    padding:12px 14px;font-size:14px;border-radius:2px;margin-bottom:14px;direction:ltr;text-align:center;
+  }
+  .login-box input:focus{outline:none;border-color:var(--gold);}
+  .login-box button{
+    width:100%;background:var(--gold);color:#0a0a0b;font-weight:700;padding:13px;
+    border:none;border-radius:2px;cursor:pointer;font-size:14px;font-family:'Tajawal',sans-serif;
+  }
+  .login-box button:hover{background:var(--gold-bright);}
+  #login-error{color:#e06060;font-size:13px;margin-top:12px;display:none;}
+
+  /* Dashboard */
+  #dashboard{display:none;}
+  header{
+    padding:20px 24px;border-bottom:1px solid var(--rule);
+    display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;
+    background:rgba(10,10,11,0.95);backdrop-filter:blur(10px);z-index:10;
+  }
+  header .logo{font-family:'Space Mono',monospace;font-weight:700;color:var(--gold-bright);letter-spacing:3px;}
+  header h1{font-family:'Cairo',sans-serif;font-weight:800;font-size:16px;}
+  .refresh-btn{
+    background:transparent;border:1px solid var(--rule);color:var(--text-muted);
+    padding:8px 16px;border-radius:2px;cursor:pointer;font-size:13px;font-family:'Tajawal',sans-serif;
+  }
+  .refresh-btn:hover{border-color:var(--gold);color:var(--gold-bright);}
+
+  main{max-width:800px;margin:0 auto;padding:24px;}
+  .empty-state{text-align:center;color:var(--text-muted);padding:80px 20px;font-size:14px;}
+
+  .order-card{
+    background:var(--surface);border:1px solid var(--rule);border-top:3px solid var(--gold);
+    margin-bottom:20px;padding:20px;
+  }
+  .oc-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+  .oc-id{font-family:'Space Mono',monospace;color:var(--gold-bright);font-size:13px;}
+  .oc-date{color:var(--text-muted);font-size:12px;margin-top:4px;}
+  .oc-status{
+    font-size:11px;padding:4px 12px;border-radius:20px;font-family:'Space Mono',monospace;
+    border:1px solid var(--gold);color:var(--gold);white-space:nowrap;
+  }
+  .oc-status.delivered{border-color:var(--green);color:var(--green);}
+
+  .oc-section{padding:12px 0;border-top:1px dashed var(--rule);font-size:14px;}
+  .oc-section .lbl{color:var(--text-muted);font-size:12px;margin-bottom:6px;}
+  .oc-items div{display:flex;justify-content:space-between;padding:4px 0;font-size:13.5px;}
+  .oc-total{display:flex;justify-content:space-between;font-weight:700;padding-top:10px;border-top:1px solid var(--rule);margin-top:8px;}
+  .oc-total .val{color:var(--gold-bright);font-family:'Space Mono',monospace;}
+
+  .oc-actions{display:flex;gap:10px;margin-top:16px;}
+  .oc-btn{
+    flex:1;padding:11px;border-radius:2px;font-size:13px;cursor:pointer;
+    border:1px solid var(--gold);background:transparent;color:var(--gold-bright);
+    font-family:'Tajawal',sans-serif;font-weight:700;
+  }
+  .oc-btn:hover{background:var(--gold);color:#0a0a0b;}
+  .oc-btn:disabled{opacity:0.4;cursor:default;}
+  .oc-btn.done{border-color:var(--green);color:var(--green);}
+  .oc-btn.done:hover{background:var(--green);color:#0a0a0b;}
+
+  .phone-link{color:var(--gold-bright);direction:ltr;display:inline-block;}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <div class="logo">APEX<span style="color:var(--text)">.</span></div>
+    <p>لوحة تحكم الطلبات — خاصة بصاحب المتجر</p>
+    <input type="password" id="password-input" placeholder="كلمة السر" onkeydown="if(event.key==='Enter') login()">
+    <button onclick="login()">دخول</button>
+    <div id="login-error">كلمة السر غير صحيحة</div>
+  </div>
+</div>
+
+<div id="dashboard">
+  <header>
+    <div class="logo">APEX<span style="color:var(--text)">.</span></div>
+    <h1>لوحة الطلبات</h1>
+    <button class="refresh-btn" onclick="loadOrders()">↻ تحديث</button>
+  </header>
+  <main id="orders-container">
+    <div class="empty-state">جاري تحميل الطلبات...</div>
+  </main>
+</div>
+
+<script>
+let ADMIN_PASSWORD = "";
+
+function login(){
+  const val = document.getElementById("password-input").value;
+  ADMIN_PASSWORD = val;
+  document.getElementById("login-error").style.display = "none";
+  loadOrders(true);
+}
+
+async function loadOrders(isLogin){
+  try{
+    const res = await fetch("/.netlify/functions/get-orders", {
+      headers: { "x-admin-password": ADMIN_PASSWORD }
+    });
+    if(res.status === 401){
+      if(isLogin) document.getElementById("login-error").style.display = "block";
+      return;
+    }
+    const data = await res.json();
+    sessionStorage.setItem("apex_admin_pass", ADMIN_PASSWORD);
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+    renderOrders(data.orders || []);
+  }catch(err){
+    if(isLogin) alert("صار خطأ: " + err.message);
+  }
+}
+
+function renderOrders(orders){
+  const el = document.getElementById("orders-container");
+  if(orders.length === 0){
+    el.innerHTML = `<div class="empty-state">ماكو طلبات لحد الحين</div>`;
+    return;
+  }
+  el.innerHTML = orders.map(o => `
+    <div class="order-card">
+      <div class="oc-head">
+        <div>
+          <div class="oc-id">${o.id}</div>
+          <div class="oc-date">${new Date(o.createdAt).toLocaleString('ar-IQ')}</div>
+        </div>
+        <div class="oc-status ${o.status==='تم التسليم لشركة التوصيل' ? 'delivered':''}">${o.status}</div>
+      </div>
+
+      <div class="oc-section">
+        <div class="lbl">بيانات الزبون</div>
+        <div>${o.customer.name} — <a class="phone-link" href="tel:${o.customer.phone}">${o.customer.phone}</a></div>
+        <div style="color:var(--text-muted);margin-top:4px;">${o.customer.city} — ${o.customer.address}</div>
+      </div>
+
+      <div class="oc-section oc-items">
+        <div class="lbl">المنتجات</div>
+        ${o.items.map(i=>`<div><span>${i.name} × ${i.qty}</span><span class="mono">${(i.price*i.qty).toLocaleString()} د.ع</span></div>`).join("")}
+        <div class="oc-total"><span>المجموع</span><span class="val">${o.total.toLocaleString()} د.ع</span></div>
+      </div>
+
+      <div class="oc-actions">
+        ${o.status === 'تم التسليم لشركة التوصيل'
+          ? `<button class="oc-btn done" disabled>✓ تم التسليم لشركة التوصيل</button>`
+          : `<button class="oc-btn" onclick="markDelivered('${o.id}')">تسليم لشركة التوصيل</button>`}
+      </div>
+    </div>
+  `).join("");
+}
+
+async function markDelivered(id){
+  try{
+    const res = await fetch("/.netlify/functions/update-order", {
+      method:"POST",
+      headers:{"Content-Type":"application/json","x-admin-password":ADMIN_PASSWORD},
+      body: JSON.stringify({ id, status:"تم التسليم لشركة التوصيل" }),
+    });
+    if(!res.ok) throw new Error("فشل التحديث");
+    loadOrders();
+  }catch(err){
+    alert("صار خطأ: " + err.message);
+  }
+}
+
+// إذا مسجل دخول من قبل بنفس الجلسة، ادخل مباشرة
+const savedPass = sessionStorage.getItem("apex_admin_pass");
+if(savedPass){
+  ADMIN_PASSWORD = savedPass;
+  loadOrders(false);
+}
+</script>
+
+</body>
+</html>
