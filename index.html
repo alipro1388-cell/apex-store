@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APEX | مكملات غذائية أصلية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=Tajawal:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0b;
+    --surface:#151310;
+    --surface2:#1c1a15;
+    --gold:#c9a227;
+    --gold-bright:#e8c468;
+    --text:#f5f1e8;
+    --text-muted:#9c9488;
+    --rule:#2b2822;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Tajawal',sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  .mono{font-family:'Space Mono',monospace;}
+  .display{font-family:'Cairo',sans-serif;font-weight:900;}
+  a{color:inherit;text-decoration:none;}
+  ul{list-style:none;}
+  img,svg{display:block;max-width:100%;}
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;top:0;z-index:100;
+    background:rgba(10,10,11,0.9);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--rule);
+  }
+  .header-inner{
+    max-width:1200px;margin:0 auto;padding:18px 24px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .logo{
+    font-family:'Space Mono',monospace;font-weight:700;font-size:24px;
+    letter-spacing:4px;color:var(--gold-bright);
+  }
+  .logo span{color:var(--text);}
+  nav ul{display:flex;gap:32px;font-size:15px;color:var(--text-muted);}
+  nav a:hover{color:var(--gold-bright);}
+  .cart-btn{
+    background:var(--gold);color:#0a0a0b;font-weight:700;font-size:14px;
+    padding:10px 18px;border-radius:2px;display:flex;align-items:center;gap:8px;
+    cursor:pointer;border:none;font-family:'Tajawal',sans-serif;
+    transition:background .2s;
+  }
+  .cart-btn:hover{background:var(--gold-bright);}
+  #cart-count{font-family:'Space Mono',monospace;}
+  .mobile-nav{display:none;}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    max-width:1200px;margin:0 auto;padding:90px 24px 70px;
+    display:grid;grid-template-columns:1.2fr 0.8fr;gap:60px;align-items:center;
+  }
+  .eyebrow{
+    color:var(--gold);font-family:'Space Mono',monospace;font-size:13px;
+    letter-spacing:3px;margin-bottom:20px;
+  }
+  .eyebrow::before{content:"— ";}
+  .hero h1{
+    font-size:52px;line-height:1.15;margin-bottom:24px;color:var(--text);
+  }
+  .hero h1 em{
+    font-style:normal;color:var(--gold-bright);
+    border-bottom:3px solid var(--gold);
+    padding-bottom:4px;
+  }
+  .hero p{
+    color:var(--text-muted);font-size:17px;max-width:480px;margin-bottom:32px;
+  }
+  .btn-primary{
+    display:inline-block;background:var(--gold);color:#0a0a0b;
+    font-weight:700;padding:16px 36px;border-radius:2px;font-size:15px;
+    transition:all .2s;
+  }
+  .btn-primary:hover{background:var(--gold-bright);transform:translateY(-2px);}
+
+  /* Signature: nutrition-facts style trust panel */
+  .facts-panel{
+    background:var(--surface);border:2px solid var(--text);padding:0;
+  }
+  .facts-panel .fp-head{
+    padding:16px 20px;border-bottom:8px solid var(--text);
+  }
+  .facts-panel .fp-head h3{
+    font-family:'Cairo',sans-serif;font-weight:900;font-size:26px;
+  }
+  .facts-panel .fp-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:12px 20px;border-bottom:1px solid var(--rule);
+    font-size:14px;
+  }
+  .facts-panel .fp-row:last-child{border-bottom:none;}
+  .facts-panel .fp-row .label{color:var(--text-muted);}
+  .facts-panel .fp-row .val{font-family:'Space Mono',monospace;color:var(--gold-bright);font-weight:700;font-size:16px;}
+  .facts-panel .fp-foot{
+    padding:14px 20px;font-size:12px;color:var(--text-muted);
+    border-top:8px solid var(--text);
+  }
+
+  /* ---------- Section shared ---------- */
+  section{max-width:1200px;margin:0 auto;padding:80px 24px;}
+  .section-head{margin-bottom:48px;text-align:center;}
+  .section-head .eyebrow{text-align:center;}
+  .section-head .eyebrow::before{content:"";}
+  .section-head h2{font-size:36px;color:var(--text);}
+
+  /* ---------- Category filter ---------- */
+  .filters{
+    display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:48px;
+  }
+  .filter-pill{
+    padding:10px 22px;border:1px solid var(--rule);border-radius:30px;
+    font-size:14px;color:var(--text-muted);cursor:pointer;transition:all .2s;
+    background:transparent;font-family:'Tajawal',sans-serif;
+  }
+  .filter-pill.active,.filter-pill:hover{
+    border-color:var(--gold);color:var(--gold-bright);background:rgba(201,162,39,0.08);
+  }
+
+  /* ---------- Product grid ---------- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:28px;}
+  .card{
+    background:var(--surface);border:1px solid var(--rule);
+    display:flex;flex-direction:column;transition:transform .2s,border-color .2s;
+  }
+  .card:hover{transform:translateY(-4px);border-color:var(--gold);}
+  .card-top{border-top:3px solid var(--gold);}
+  .icon-wrap{
+    height:160px;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 50% 30%, #201d17 0%, #131210 70%);
+  }
+  .card-body{padding:20px;display:flex;flex-direction:column;gap:10px;flex:1;}
+  .card-cat{font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:2px;}
+  .card-name{font-family:'Cairo',sans-serif;font-weight:800;font-size:19px;}
+  .card-desc{color:var(--text-muted);font-size:13.5px;flex:1;}
+  .card-bottom{
+    display:flex;justify-content:space-between;align-items:center;
+    padding-top:12px;border-top:1px dashed var(--rule);
+  }
+  .price{font-family:'Space Mono',monospace;font-weight:700;font-size:18px;color:var(--gold-bright);}
+  .price small{font-size:11px;color:var(--text-muted);font-weight:400;}
+  .add-btn{
+    background:transparent;border:1px solid var(--gold);color:var(--gold-bright);
+    padding:9px 16px;font-size:13px;border-radius:2px;cursor:pointer;
+    font-family:'Tajawal',sans-serif;font-weight:700;transition:all .2s;
+  }
+  .add-btn:hover{background:var(--gold);color:#0a0a0b;}
+  .add-btn.added{background:var(--gold);color:#0a0a0b;}
+
+  /* ---------- Trust strip ---------- */
+  .trust{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+    background:var(--rule);border:1px solid var(--rule);
+  }
+  .trust-item{background:var(--bg);padding:36px 24px;text-align:center;}
+  .trust-item .num{font-family:'Space Mono',monospace;font-size:30px;color:var(--gold-bright);font-weight:700;}
+  .trust-item .lbl{color:var(--text-muted);font-size:14px;margin-top:8px;}
+
+  /* ---------- Footer ---------- */
+  footer{border-top:1px solid var(--rule);padding:50px 24px 30px;}
+  .footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:30px;}
+  .footer-inner .logo{margin-bottom:10px;}
+  footer p{color:var(--text-muted);font-size:14px;max-width:320px;}
+  .footer-links h4{font-size:14px;color:var(--gold);margin-bottom:14px;}
+  .footer-links ul{display:flex;flex-direction:column;gap:10px;}
+  .footer-links a{color:var(--text-muted);font-size:14px;}
+  .footer-links a:hover{color:var(--gold-bright);}
+  .copyright{
+    text-align:center;color:var(--text-muted);font-size:12px;margin-top:40px;
+    padding-top:20px;border-top:1px solid var(--rule);font-family:'Space Mono',monospace;
+  }
+
+  /* ---------- Floating order button ---------- */
+  .float-order{
+    position:fixed;bottom:24px;left:24px;z-index:200;
+    background:var(--gold);color:#0a0a0b;padding:16px 26px;border-radius:40px;
+    display:none;align-items:center;gap:10px;font-weight:700;cursor:pointer;
+    box-shadow:0 8px 24px rgba(0,0,0,0.5);font-family:'Tajawal',sans-serif;
+    border:none;font-size:15px;
+  }
+  .float-order.show{display:flex;}
+
+  @media(max-width:860px){
+    .hero{grid-template-columns:1fr;padding-top:50px;}
+    .hero h1{font-size:36px;}
+    nav{display:none;}
+    .trust{grid-template-columns:1fr;}
+  }
+
+  /* ---------- Cart / Checkout Drawer ---------- */
+  .overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;
+    display:none;
+  }
+  .overlay.show{display:block;}
+  .drawer{
+    position:fixed;top:0;bottom:0;right:0;width:min(440px,100%);
+    background:var(--bg);border-left:1px solid var(--rule);z-index:301;
+    display:flex;flex-direction:column;
+    transform:translateX(100%);transition:transform .3s ease;
+  }
+  .drawer.show{transform:translateX(0);}
+  .drawer-head{
+    padding:20px 24px;border-bottom:1px solid var(--rule);
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .drawer-head h3{font-family:'Cairo',sans-serif;font-weight:800;font-size:18px;}
+  .drawer-close{background:none;border:none;color:var(--text-muted);font-size:22px;cursor:pointer;}
+  .drawer-close:hover{color:var(--gold-bright);}
+  .drawer-body{flex:1;overflow-y:auto;padding:20px 24px;}
+  .drawer-foot{padding:20px 24px;border-top:1px solid var(--rule);}
+
+  .cart-line{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:14px 0;border-bottom:1px solid var(--rule);gap:12px;
+  }
+  .cart-line .cl-name{font-weight:700;font-size:14px;}
+  .cart-line .cl-price{color:var(--text-muted);font-size:12px;font-family:'Space Mono',monospace;margin-top:4px;}
+  .qty-stepper{display:flex;align-items:center;gap:10px;}
+  .qty-stepper button{
+    width:26px;height:26px;border:1px solid var(--rule);background:transparent;
+    color:var(--gold-bright);cursor:pointer;font-size:15px;border-radius:2px;
+  }
+  .qty-stepper button:hover{border-color:var(--gold);}
+  .qty-stepper span{font-family:'Space Mono',monospace;min-width:16px;text-align:center;}
+  .empty-cart{color:var(--text-muted);text-align:center;padding:60px 0;font-size:14px;}
+
+  .drawer-total{
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:16px;margin-bottom:16px;
+  }
+  .drawer-total .val{font-family:'Space Mono',monospace;color:var(--gold-bright);font-weight:700;font-size:20px;}
+  .btn-block{
+    display:block;width:100%;text-align:center;background:var(--gold);color:#0a0a0b;
+    font-weight:700;padding:14px;border-radius:2px;font-size:15px;border:none;cursor:pointer;
+    font-family:'Tajawal',sans-serif;transition:background .2s;
+  }
+  .btn-block:hover{background:var(--gold-bright);}
+  .btn-ghost{
+    display:block;width:100%;text-align:center;background:transparent;color:var(--text-muted);
+    padding:12px;font-size:13px;border:none;cursor:pointer;margin-top:8px;
+    font-family:'Tajawal',sans-serif;
+  }
+  .btn-ghost:hover{color:var(--gold-bright);}
+
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:13px;color:var(--text-muted);margin-bottom:8px;}
+  .field input,.field select{
+    width:100%;background:var(--surface);border:1px solid var(--rule);color:var(--text);
+    padding:12px 14px;font-size:14px;border-radius:2px;font-family:'Tajawal',sans-serif;
+    direction:rtl;text-align:right;unicode-bidi:plaintext;
+  }
+  .field input[type=tel]{direction:ltr;text-align:right;}
+  .field input:focus,.field select:focus{outline:none;border-color:var(--gold);}
+
+  .pay-option{
+    display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--rule);
+    border-radius:2px;margin-bottom:10px;cursor:pointer;transition:border-color .2s;
+  }
+  .pay-option:hover{border-color:var(--gold);}
+  .pay-option input[type=radio]{accent-color:var(--gold);width:18px;height:18px;}
+  .pay-option.disabled{opacity:0.5;cursor:not-allowed;}
+  .pay-option .po-name{font-weight:700;font-size:14px;flex:1;}
+  .po-badge{
+    font-family:'Space Mono',monospace;font-size:10px;color:var(--gold);
+    border:1px solid var(--gold);padding:2px 8px;border-radius:20px;
+  }
+  .step{display:none;}
+  .step.active{display:flex;flex-direction:column;height:100%;}
+  .step.active#step-checkout{display:block;overflow-y:auto;}
+  .step.active{display:block;}
+  .back-link{color:var(--text-muted);font-size:13px;margin-bottom:20px;display:inline-block;cursor:pointer;}
+  .back-link:hover{color:var(--gold-bright);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">APEX<span>.</span></div>
+    <nav><ul>
+      <li><a href="#home">الرئيسية</a></li>
+      <li><a href="#products">المنتجات</a></li>
+      <li><a href="#about">عن APEX</a></li>
+      <li><a href="#contact">تواصل</a></li>
+    </ul></nav>
+    <button class="cart-btn" onclick="openCart()">
+      🛒 السلة <span id="cart-count" class="mono">(0)</span>
+    </button>
+  </div>
+</header>
+
+<section id="home" class="hero">
+  <div>
+    <div class="eyebrow">مكملات غذائية أصلية 100%</div>
+    <h1>طاقتك الحقيقية تبدأ من <em>مصدر موثوق</em></h1>
+    <p>كرياتين، بروتين، وفيتامينات بجودة عالمية — نوصلها لباب بيتك بجميع محافظات العراق. أضف منتجاتك للسلة وأكمل الطلب مباشرة من الموقع.</p>
+    <a href="#products" class="btn-primary">تصفح المنتجات</a>
+  </div>
+  <div class="facts-panel">
+    <div class="fp-head"><h3>لماذا APEX</h3></div>
+    <div class="fp-row"><span class="label">منتجات أصلية موثقة</span><span class="val">100%</span></div>
+    <div class="fp-row"><span class="label">التوصيل لكل المحافظات</span><span class="val">✓</span></div>
+    <div class="fp-row"><span class="label">الدفع عند الاستلام</span><span class="val">✓</span></div>
+    <div class="fp-row"><span class="label">وقت التوصيل بغداد</span><span class="val">24 س</span></div>
+    <div class="fp-row"><span class="label">دعم مباشر عبر واتساب</span><span class="val">✓</span></div>
+    <div class="fp-foot">جميع المنتجات مستوردة أصلياً ومخزّنة بظروف مناسبة لضمان الجودة.</div>
+  </div>
+</section>
+
+<section id="products">
+  <div class="section-head">
+    <div class="eyebrow">المنتجات</div>
+    <h2>اختر مكملك</h2>
+  </div>
+  <div class="filters" id="filters"></div>
+  <div class="grid" id="product-grid"></div>
+</section>
+
+<section id="about">
+  <div class="trust">
+    <div class="trust-item"><div class="num">+500</div><div class="lbl">زبون راضٍ</div></div>
+    <div class="trust-item"><div class="num">18</div><div class="lbl">محافظة توصيل</div></div>
+    <div class="trust-item"><div class="num">100%</div><div class="lbl">منتج أصلي</div></div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="footer-inner">
+    <div>
+      <div class="logo">APEX<span>.</span></div>
+      <p>وجهتك الموثوقة للمكملات الغذائية الأصلية في العراق. جودة حقيقية، نتائج حقيقية.</p>
+    </div>
+    <div class="footer-links">
+      <h4>تواصل معنا</h4>
+      <ul>
+        <li><a href="https://wa.me/9647700000000" target="_blank">واتساب: 07700000000</a></li>
+        <li><a href="#">إنستغرام</a></li>
+        <li><a href="#">تيك توك</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>معلومات</h4>
+      <ul>
+        <li><a href="#">سياسة الاستبدال</a></li>
+        <li><a href="#">طرق الدفع والتوصيل</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="copyright">© 2026 APEX STORE — جميع الحقوق محفوظة</div>
+</footer>
+
+<button class="float-order" id="floatOrder" onclick="openCart()">
+  🛒 عرض السلة <span id="float-count" class="mono">(0)</span>
+</button>
+
+<!-- ===== Cart / Checkout Drawer ===== -->
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+
+  <!-- Step 1: Cart -->
+  <div class="step active" id="step-cart">
+    <div class="drawer-head">
+      <h3>سلة التسوق</h3>
+      <button class="drawer-close" onclick="closeDrawer()">×</button>
+    </div>
+    <div class="drawer-body" id="cart-body"></div>
+    <div class="drawer-foot" id="cart-foot">
+      <div class="drawer-total"><span>المجموع</span><span class="val mono" id="cart-total">0 د.ع</span></div>
+      <button class="btn-block" onclick="goToCheckout()">متابعة للدفع</button>
+    </div>
+  </div>
+
+  <!-- Step 2: Checkout -->
+  <div class="step" id="step-checkout">
+    <div class="drawer-head">
+      <h3>إتمام الطلب</h3>
+      <button class="drawer-close" onclick="closeDrawer()">×</button>
+    </div>
+    <div class="drawer-body">
+      <span class="back-link" onclick="goToCart()">→ رجوع للسلة</span>
+
+      <div class="field">
+        <label>الاسم الكامل</label>
+        <input type="text" id="cust-name" dir="rtl" placeholder="مثال: أحمد علي">
+      </div>
+      <div class="field">
+        <label>رقم الهاتف</label>
+        <input type="tel" id="cust-phone" dir="ltr" placeholder="07XXXXXXXXX">
+      </div>
+      <div class="field">
+        <label>المحافظة</label>
+        <select id="cust-city" dir="rtl">
+          <option>بغداد</option><option>البصرة</option><option>نينوى</option>
+          <option>أربيل</option><option>النجف</option><option>كربلاء</option>
+          <option>ذي قار</option><option>أخرى</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>العنوان التفصيلي</label>
+        <input type="text" id="cust-address" dir="rtl" placeholder="المنطقة، الشارع، أقرب نقطة دالة">
+      </div>
+
+      <div class="field">
+        <label>طريقة الدفع</label>
+        <label class="pay-option">
+          <input type="radio" name="pay" value="cod" checked>
+          <span class="po-name">الدفع عند الاستلام (كاش)</span>
+        </label>
+        <label class="pay-option disabled">
+          <input type="radio" name="pay" value="zaincash" disabled>
+          <span class="po-name">زين كاش</span>
+          <span class="po-badge">قريباً</span>
+        </label>
+        <label class="pay-option disabled">
+          <input type="radio" name="pay" value="card" disabled>
+          <span class="po-name">بطاقة ماستركارد / فيزا</span>
+          <span class="po-badge">قريباً</span>
+        </label>
+        <label class="pay-option disabled">
+          <input type="radio" name="pay" value="fastpay" disabled>
+          <span class="po-name">الدفع عبر FastPay</span>
+          <span class="po-badge">قريباً</span>
+        </label>
+      </div>
+    </div>
+    <div class="drawer-foot">
+      <div class="drawer-total"><span>المجموع</span><span class="val mono" id="checkout-total">0 د.ع</span></div>
+      <button class="btn-block" id="confirm-btn" onclick="confirmOrder()">تأكيد الطلب</button>
+    </div>
+  </div>
+
+  <!-- Step 3: Success -->
+  <div class="step" id="step-success">
+    <div class="drawer-head">
+      <h3>تم استلام طلبك</h3>
+      <button class="drawer-close" onclick="closeDrawer()">×</button>
+    </div>
+    <div class="drawer-body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;">
+      <div style="font-size:48px;">✅</div>
+      <div style="font-family:'Cairo',sans-serif;font-weight:800;font-size:20px;">شكراً لك، طلبك وصلنا</div>
+      <div style="color:var(--text-muted);font-size:14px;">رقم الطلب: <span class="mono" id="success-order-id" style="color:var(--gold-bright);"></span></div>
+      <div style="color:var(--text-muted);font-size:13px;">راح يتواصل معك فريقنا لتأكيد التوصيل قريباً.</div>
+    </div>
+    <div class="drawer-foot">
+      <button class="btn-block" onclick="closeDrawer()">إغلاق</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   إعدادات المتجر — عدّل هذا القسم بسهولة
+   ============================================================ */
+const PRODUCTS = [
+  {id:1, cat:"كرياتين", name:"كرياتين مونوهيدرات", desc:"250 غم — نقاء عالي لزيادة القوة والأداء", price:35000},
+  {id:2, cat:"بروتين", name:"واي بروتين ايزوليت", desc:"2 كغم — نكهة شوكولاتة، امتصاص سريع", price:95000},
+  {id:3, cat:"بروتين", name:"واي بروتين كونسنتريت", desc:"2 كغم — نكهة فانيلا، لبناء العضلات", price:75000},
+  {id:4, cat:"ما قبل التمرين", name:"بري ورك اوت طاقة", desc:"30 وجبة — تركيز وطاقة انفجارية بالتمرين", price:45000},
+  {id:5, cat:"فيتامينات", name:"فيتامين د3 + ك2", desc:"60 كبسولة — لدعم العظام والمناعة", price:20000},
+  {id:6, cat:"فيتامينات", name:"أوميغا 3 زيت سمك", desc:"90 كبسولة — لصحة القلب والمفاصل", price:25000},
+  {id:7, cat:"كرياتين", name:"كرياتين HCL", desc:"120 كبسولة — بدون احتباس ماء", price:40000},
+  {id:8, cat:"بروتين", name:"كازين بروتين ليلي", desc:"1 كغم — إطلاق بطيء أثناء النوم", price:60000},
+];
+
+/* ============================================================ */
+
+let cart = [];
+let activeFilter = "الكل";
+
+const categories = ["الكل", ...new Set(PRODUCTS.map(p=>p.cat))];
+
+function renderFilters(){
+  const el = document.getElementById("filters");
+  el.innerHTML = categories.map(c =>
+    `<button class="filter-pill ${c===activeFilter?'active':''}" onclick="setFilter('${c}')">${c}</button>`
+  ).join("");
+}
+
+function setFilter(cat){
+  activeFilter = cat;
+  renderFilters();
+  renderProducts();
+}
+
+function iconSVG(){
+  return `<svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#c9a227" stroke-width="1.5">
+    <path d="M8 2h8v3.5c1.5.8 2.5 2.4 2.5 4.2v9.3a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3V9.7c0-1.8 1-3.4 2.5-4.2V2Z"/>
+    <path d="M6 12h12" stroke-dasharray="2 2"/>
+  </svg>`;
+}
+
+function renderProducts(){
+  const list = activeFilter==="الكل" ? PRODUCTS : PRODUCTS.filter(p=>p.cat===activeFilter);
+  const el = document.getElementById("product-grid");
+  el.innerHTML = list.map(p => `
+    <div class="card card-top">
+      <div class="icon-wrap">${iconSVG()}</div>
+      <div class="card-body">
+        <div class="card-cat">${p.cat}</div>
+        <div class="card-name">${p.name}</div>
+        <div class="card-desc">${p.desc}</div>
+        <div class="card-bottom">
+          <div class="price">${p.price.toLocaleString()} <small>د.ع</small></div>
+          <button class="add-btn" id="btn-${p.id}" onclick="addToCart(${p.id})">أضف للطلب</button>
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+// cart is stored as {id, qty} entries
+function addToCart(id){
+  const line = cart.find(l=>l.id===id);
+  if(line){ line.qty++; } else { cart.push({id, qty:1}); }
+  updateCartUI();
+  const btn = document.getElementById(`btn-${id}`);
+  btn.textContent = "أُضيف ✓";
+  btn.classList.add("added");
+  setTimeout(()=>{ btn.textContent="أضف للطلب"; btn.classList.remove("added"); }, 1200);
+}
+
+function changeQty(id, delta){
+  const line = cart.find(l=>l.id===id);
+  if(!line) return;
+  line.qty += delta;
+  if(line.qty<=0){ cart = cart.filter(l=>l.id!==id); }
+  updateCartUI();
+  renderCartBody();
+}
+
+function cartTotal(){
+  return cart.reduce((sum,l)=>{
+    const p = PRODUCTS.find(pr=>pr.id===l.id);
+    return sum + p.price*l.qty;
+  },0);
+}
+
+function cartCount(){
+  return cart.reduce((sum,l)=>sum+l.qty,0);
+}
+
+function updateCartUI(){
+  const count = cartCount();
+  document.getElementById("cart-count").textContent = `(${count})`;
+  document.getElementById("float-count").textContent = `(${count})`;
+  document.getElementById("floatOrder").classList.toggle("show", count>0);
+  const total = cartTotal().toLocaleString()+" د.ع";
+  document.getElementById("cart-total").textContent = total;
+  document.getElementById("checkout-total").textContent = total;
+}
+
+function renderCartBody(){
+  const el = document.getElementById("cart-body");
+  if(cart.length===0){
+    el.innerHTML = `<div class="empty-cart">السلة فارغة — تصفح المنتجات وأضف اللي يعجبك</div>`;
+    return;
+  }
+  el.innerHTML = cart.map(l=>{
+    const p = PRODUCTS.find(pr=>pr.id===l.id);
+    return `
+      <div class="cart-line">
+        <div>
+          <div class="cl-name">${p.name}</div>
+          <div class="cl-price">${p.price.toLocaleString()} د.ع × ${l.qty}</div>
+        </div>
+        <div class="qty-stepper">
+          <button onclick="changeQty(${p.id},-1)">−</button>
+          <span>${l.qty}</span>
+          <button onclick="changeQty(${p.id},1)">+</button>
+        </div>
+      </div>`;
+  }).join("");
+}
+
+function openCart(){
+  renderCartBody();
+  updateCartUI();
+  document.getElementById("step-cart").classList.add("active");
+  document.getElementById("step-checkout").classList.remove("active");
+  document.getElementById("step-success").classList.remove("active");
+  document.getElementById("overlay").classList.add("show");
+  document.getElementById("drawer").classList.add("show");
+}
+
+function closeDrawer(){
+  document.getElementById("overlay").classList.remove("show");
+  document.getElementById("drawer").classList.remove("show");
+}
+
+function goToCheckout(){
+  if(cart.length===0){
+    alert("سلة الطلب فارغة، أضف منتج واحد على الأقل.");
+    return;
+  }
+  document.getElementById("step-cart").classList.remove("active");
+  document.getElementById("step-checkout").classList.add("active");
+}
+
+function goToCart(){
+  document.getElementById("step-checkout").classList.remove("active");
+  document.getElementById("step-cart").classList.add("active");
+}
+
+function goToSuccess(orderId){
+  document.getElementById("step-checkout").classList.remove("active");
+  document.getElementById("step-success").classList.add("active");
+  document.getElementById("success-order-id").textContent = orderId;
+  cart = [];
+  updateCartUI();
+}
+
+async function confirmOrder(){
+  const name = document.getElementById("cust-name").value.trim();
+  const phone = document.getElementById("cust-phone").value.trim();
+  const city = document.getElementById("cust-city").value;
+  const address = document.getElementById("cust-address").value.trim();
+
+  if(!name || !phone || !address){
+    alert("عبّي الاسم ورقم الهاتف والعنوان قبل تأكيد الطلب.");
+    return;
+  }
+
+  const btn = document.getElementById("confirm-btn");
+  btn.disabled = true;
+  btn.textContent = "جاري إرسال الطلب...";
+
+  const orderData = {
+    name, phone, city, address,
+    items: cart.map(l=>{
+      const p = PRODUCTS.find(pr=>pr.id===l.id);
+      return { name:p.name, qty:l.qty, price:p.price };
+    }),
+    total: cartTotal(),
+    payment: "الدفع عند الاستلام",
+  };
+
+  try{
+    const res = await fetch("/.netlify/functions/create-order", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify(orderData),
+    });
+    const result = await res.json();
+    if(!res.ok || !result.success){
+      throw new Error(result.error || "فشل إرسال الطلب");
+    }
+    goToSuccess(result.orderId);
+  }catch(err){
+    alert("صار خطأ بإرسال الطلب، جرب مرة ثانية. (" + err.message + ")");
+  }finally{
+    btn.disabled = false;
+    btn.textContent = "تأكيد الطلب";
+  }
+}
+
+renderFilters();
+renderProducts();
+updateCartUI();
+</script>
+
+</body>
+</html>
