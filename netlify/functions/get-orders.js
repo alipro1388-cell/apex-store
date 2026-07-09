@@ -10,7 +10,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const store = getStore("orders");
+  const store =  getStore({name: "orders", siteID: process.env.NETLIFY_SITE_ID, token: process.env.NETLIFY_API_TOKEN});
     const { blobs } = await store.list();
 
     const orders = await Promise.all(
