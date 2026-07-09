@@ -12,7 +12,7 @@ exports.handler = async (event) => {
       return { statusCode: 400, body: JSON.stringify({ error: "بيانات الطلب ناقصة" }) };
     }
 
-    const store = getStore("orders");
+    const store = getStore({name: "orders", siteID: process.env.NETLIFY_SITE_ID, token: process.env.NETLIFY_API_TOKEN})
     const id = "ORD-" + Date.now();
 
     const order = {
